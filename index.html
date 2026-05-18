@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Prompt Injection as Role Confusion</title>
+    <meta
+      name="description"
+      content="Project page for Prompt Injection as Role Confusion, accepted to ICML 2026."
+    >
+    <meta property="og:title" content="Prompt Injection as Role Confusion">
+    <meta
+      property="og:description"
+      content="Prompt injection persists because role boundaries exist at the interface but dissolve in latent space."
+    >
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://role-confusion.github.io/assets/figures/role-perception.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#fbfaf7">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <nav class="top-nav" aria-label="Page navigation">
+      <a href="#abstract">Abstract</a>
+      <a href="#results">Results</a>
+      <a href="#demo">Demo</a>
+      <a href="#figures">Figures</a>
+      <a href="#citation">Citation</a>
+    </nav>
+
+    <main class="page">
+      <header class="paper-header">
+        <p class="venue">ICML 2026</p>
+        <h1>Prompt Injection as Role Confusion</h1>
+        <p class="authors">Charles Ye, Jasmine Cui, Dylan Hadfield-Menell</p>
+        <div class="links" aria-label="Paper links">
+          <a href="assets/papers/role-confusion.pdf">Paper</a>
+          <a href="https://arxiv.org/abs/2603.12277" target="_blank" rel="noreferrer">arXiv</a>
+          <a href="https://github.com/role-confusion/role-confusion.github.io" target="_blank" rel="noreferrer">Code</a>
+          <a href="#citation">BibTeX</a>
+        </div>
+      </header>
+
+      <section id="abstract" class="section">
+        <h2>Abstract</h2>
+        <p>
+          Language models remain vulnerable to prompt injection because they do
+          not always track the true source of text. Instead, they infer roles
+          from how text is written. Text that sounds like a trusted source can
+          occupy the same internal role space as text that actually came from
+          that source, giving untrusted content inappropriate authority.
+        </p>
+        <p>
+          We introduce role probes to measure how models internally perceive
+          "who is speaking", and show that role confusion predicts attack
+          success before generation begins. Across chat jailbreaks and standard
+          agent prompt injections, attacker-controllable cues such as style,
+          formatting, declarations, and position can override architectural role
+          tags.
+        </p>
+      </section>
+
+      <figure class="teaser">
+        <img
+          src="assets/figures/role-perception.png"
+          alt="Three role-probe plots showing that chain-of-thought styled text registers as reasoning even without tags and even when wrapped as user text."
+        >
+        <figcaption>
+          Role probes show that reasoning-style text remains high-CoTness
+          without tags and even when wrapped inside user tags.
+        </figcaption>
+      </figure>
+
+      <section id="results" class="section">
+        <h2>Main Results</h2>
+        <table class="results-table">
+          <tbody>
+            <tr>
+              <th>CoT Forgery</th>
+              <td>
+                Injecting fabricated reasoning into low-privilege channels
+                reaches 60% average attack success on StrongREJECT across
+                frontier models with near-zero baselines.
+              </td>
+            </tr>
+            <tr>
+              <th>Style ablation</th>
+              <td>
+                Removing target-model reasoning style while preserving the same
+                fabricated justification drops attack success from 61% to 10%.
+              </td>
+            </tr>
+            <tr>
+              <th>Role probes</th>
+              <td>
+                Linear probes trained only on tag-induced geometry recover
+                perceived role in real conversations and reveal when injected
+                text is internally misclassified.
+              </td>
+            </tr>
+            <tr>
+              <th>Prediction</th>
+              <td>
+                Probe-measured CoTness and Userness predict attack success in
+                chat and agent settings before the model generates a token.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Mechanism</h2>
+        <p>
+          The core finding is a mismatch between interface role and latent role.
+          A system can label content as tool output, but the model may represent
+          it as a user instruction or as its own reasoning if the text carries
+          the right cues. Prompt injection is therefore not merely a brittle
+          string exploit; it is state poisoning of the model's internal role
+          representation.
+        </p>
+        <div class="mechanism">
+          <div>
+            <span>Interface role</span>
+            <strong>tool output</strong>
+          </div>
+          <div>
+            <span>Attacker cue</span>
+            <strong>reasoning style</strong>
+          </div>
+          <div>
+            <span>Latent role</span>
+            <strong>own thought</strong>
+          </div>
+        </div>
+      </section>
+
+      <section id="demo" class="section">
+        <div class="section-head">
+          <h2>Toy Role-Perception Demo</h2>
+          <p>
+            A small, benign sketch of the role mismatch. It is illustrative, not
+            a live model probe.
+          </p>
+        </div>
+        <div class="demo">
+          <div class="case-tabs" role="tablist" aria-label="Role confusion examples">
+            <button class="case-tab active" type="button" data-case="toolUser">Tool text, user voice</button>
+            <button class="case-tab" type="button" data-case="userCot">User text, reasoning voice</button>
+            <button class="case-tab" type="button" data-case="plainTool">Plain tool data</button>
+            <button class="case-tab" type="button" data-case="lateSystem">Late system text</button>
+          </div>
+          <div class="demo-readout" aria-live="polite">
+            <div class="demo-meta">
+              <p><span>Interface</span><strong id="lab-channel">tool output</strong></p>
+              <p><span>Dominant cue</span><strong id="lab-cue">user-like request</strong></p>
+            </div>
+            <p id="lab-summary" class="demo-summary">
+              The interface says data; the geometry leans user.
+            </p>
+            <div class="meters" id="lab-meters">
+              <div class="meter">
+                <span>Userness</span>
+                <div class="meter-track"><i style="width: 88%"></i></div>
+                <b>88%</b>
+              </div>
+              <div class="meter">
+                <span>Toolness</span>
+                <div class="meter-track"><i style="width: 9%"></i></div>
+                <b>9%</b>
+              </div>
+              <div class="meter">
+                <span>CoTness</span>
+                <div class="meter-track"><i style="width: 1%"></i></div>
+                <b>1%</b>
+              </div>
+              <div class="meter">
+                <span>Assistantness</span>
+                <div class="meter-track"><i style="width: 1%"></i></div>
+                <b>1%</b>
+              </div>
+              <div class="meter">
+                <span>Systemness</span>
+                <div class="meter-track"><i style="width: 1%"></i></div>
+                <b>1%</b>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="figures" class="section">
+        <h2>Figures</h2>
+        <div class="figure-grid">
+          <figure>
+            <img
+              src="assets/figures/probe-construction.png"
+              alt="Role probe data construction showing identical neutral text wrapped in system, user, thinking, assistant, and tool tags."
+            >
+            <figcaption>Role probes are trained on identical neutral text under different architectural tags.</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="assets/figures/style-ablation.png"
+              alt="Bar chart showing CoT Forgery has about 60.5 percent attack success while destyled CoT Forgery has about 9.7 percent."
+            >
+            <figcaption>Destyling the same argument removes most of the attack's authority.</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="assets/figures/cotness-asr.png"
+              alt="Line chart showing attack success rises as CoTness of injected forgery increases."
+            >
+            <figcaption>CoTness of injected reasoning predicts jailbreak success.</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="assets/figures/userness-asr.png"
+              alt="Line chart showing attack success rises as Userness of injected command increases."
+            >
+            <figcaption>Userness of injected commands predicts agent hijacking success.</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="assets/figures/cross-model.png"
+              alt="Layer-wise role probability plots across gpt-oss, Nemotron, and Qwen models showing injected tool-tagged text tracks baseline role perception."
+            >
+            <figcaption>Role confusion appears across model families and layers.</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="assets/figures/systemness.png"
+              alt="Two plots showing Systemness declines with token position and stays low when a system prompt is inserted later in the sequence."
+            >
+            <figcaption>Position can dominate system-role perception.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Links</h2>
+        <ul class="paper-links">
+          <li><a href="assets/papers/role-confusion.pdf">Paper PDF</a></li>
+          <li><a href="https://arxiv.org/abs/2603.12277" target="_blank" rel="noreferrer">arXiv:2603.12277</a></li>
+          <li><a href="https://github.com/role-confusion/role-confusion.github.io" target="_blank" rel="noreferrer">GitHub project page</a></li>
+        </ul>
+      </section>
+
+      <section id="citation" class="section">
+        <div class="citation-head">
+          <h2>Citation</h2>
+          <button class="copy-button" type="button" data-copy-target="bibtex">Copy BibTeX</button>
+        </div>
+        <pre id="bibtex"><code>@inproceedings{ye2026promptinjectionroleconfusion,
+  title = {Prompt Injection as Role Confusion},
+  author = {Ye, Charles and Cui, Jasmine and Hadfield-Menell, Dylan},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year = {2026},
+  url = {https://arxiv.org/abs/2603.12277}
+}</code></pre>
+      </section>
+    </main>
+
+    <footer class="footer">
+      Prompt Injection as Role Confusion. Accepted to ICML 2026.
+    </footer>
+
+    <script>
+      const roleCases = {
+        toolUser: {
+          channel: "tool output",
+          cue: "user-like request",
+          summary: "The interface says data; the geometry leans user.",
+          bars: { Userness: 88, Toolness: 9, CoTness: 1, Assistantness: 1, Systemness: 1 }
+        },
+        userCot: {
+          channel: "user message",
+          cue: "reasoning-style text",
+          summary: "The interface says user input; the model perceives reasoning.",
+          bars: { Userness: 2, Toolness: 5, CoTness: 85, Assistantness: 6, Systemness: 2 }
+        },
+        plainTool: {
+          channel: "tool output",
+          cue: "plain reference text",
+          summary: "When content reads like data, perceived role stays close to the channel.",
+          bars: { Userness: 8, Toolness: 78, CoTness: 2, Assistantness: 5, Systemness: 7 }
+        },
+        lateSystem: {
+          channel: "system tag later in context",
+          cue: "late position",
+          summary: "A system tag appearing late does not recover start-of-context authority.",
+          bars: { Userness: 22, Toolness: 18, CoTness: 3, Assistantness: 12, Systemness: 5 }
+        }
+      };
+
+      const tabs = document.querySelectorAll("[data-case]");
+      const channel = document.getElementById("lab-channel");
+      const cue = document.getElementById("lab-cue");
+      const summary = document.getElementById("lab-summary");
+      const meters = document.getElementById("lab-meters");
+
+      function renderCase(caseId) {
+        const selected = roleCases[caseId];
+        if (!selected || !meters) return;
+
+        tabs.forEach((tab) => {
+          tab.classList.toggle("active", tab.dataset.case === caseId);
+        });
+
+        channel.textContent = selected.channel;
+        cue.textContent = selected.cue;
+        summary.textContent = selected.summary;
+        meters.innerHTML = Object.entries(selected.bars).map(([label, value]) => `
+          <div class="meter">
+            <span>${label}</span>
+            <div class="meter-track"><i style="width: ${value}%"></i></div>
+            <b>${value}%</b>
+          </div>
+        `).join("");
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => renderCase(tab.dataset.case));
+      });
+
+      const copyButton = document.querySelector("[data-copy-target]");
+
+      if (copyButton) {
+        copyButton.addEventListener("click", async () => {
+          const target = document.getElementById(copyButton.dataset.copyTarget);
+          if (!target) return;
+
+          try {
+            await navigator.clipboard.writeText(target.innerText.trim());
+            copyButton.innerText = "Copied";
+            window.setTimeout(() => {
+              copyButton.innerText = "Copy BibTeX";
+            }, 1600);
+          } catch {
+            copyButton.innerText = "Select BibTeX";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
