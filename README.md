@@ -1,10 +1,8 @@
 # Prompt Injection as Role Confusion
 
-Static project page for **Prompt Injection as Role Confusion**, accepted to ICML 2026.
+Project website page for **Prompt Injection as Role Confusion**. Plain HTML/CSS for Github Pages. This is the website source, not the actual research code!
 
-The site is dependency-free: plain HTML, CSS, and a small copy-to-clipboard script. GitHub Pages can serve it directly from the repository root.
-
-## Local Preview
+## Development
 
 ```bash
 python3 -m http.server 4173
