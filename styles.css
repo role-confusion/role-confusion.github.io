@@ -3,6 +3,7 @@
   --bg: #ffffff;
   --paper: #ffffff;
   --ink: #1f2328;
+  --copy: #20262d;
   --muted: #5f6872;
   --line: #d8dee4;
   --soft: #f6f8fa;
@@ -10,6 +11,18 @@
   --blue: #1d91c0;
   --orange: #e89522;
   --violet: #8162b7;
+  --heading-font: "IBM Plex Sans", "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --body-font: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --role-user: #0b78a8;
+  --role-user-bg: #e8f6fc;
+  --role-tool: #6a50b8;
+  --role-tool-bg: #f1ecfb;
+  --role-assistant: #0f8a78;
+  --role-assistant-bg: #e6f7f3;
+  --role-system: #52525b;
+  --role-system-bg: #f0f1f3;
+  --role-think: #b45309;
+  --role-think-bg: #fff3df;
   --max: 920px;
   --page-gutter: clamp(24px, 7vw, 96px);
 }
@@ -31,9 +44,10 @@ body {
   background:
     linear-gradient(180deg, #f7fbff 0, #ffffff 260px);
   color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--body-font);
   font-size: 16px;
   line-height: 1.55;
+  word-spacing: -0.2px;
 }
 
 a {
@@ -69,12 +83,25 @@ img {
 
 .page {
   width: min(var(--max), calc(100% - (var(--page-gutter) * 2)));
-  margin-left: var(--page-gutter);
+  margin-left: auto;
   margin-right: auto;
 }
 
 .public-page {
   padding-bottom: 56px;
+}
+
+.draft-page {
+  --main-column: 720px;
+  --sidenote-column: 260px;
+  --sidenote-gap: 48px;
+  position: relative;
+  width: min(var(--main-column), calc(100% - (var(--page-gutter) * 2)));
+}
+
+.draft-page > .paper-header,
+.draft-page > .section {
+  max-width: var(--main-column);
 }
 
 .paper-header {
@@ -102,12 +129,26 @@ p {
   margin-top: 0;
 }
 
+h1,
+h2,
+h3 {
+  font-family: var(--heading-font);
+  letter-spacing: 0;
+}
+
 h1 {
   max-width: 740px;
   margin: 0;
   font-size: clamp(2.05rem, 4.1vw, 3.25rem);
-  font-weight: 650;
+  font-weight: 600;
   line-height: 1.07;
+}
+
+.section h1 {
+  margin-bottom: 10px;
+  font-size: 1.48rem;
+  font-weight: 600;
+  line-height: 1.22;
 }
 
 .authors {
@@ -166,9 +207,163 @@ h1 {
   border-bottom: 1px solid var(--line);
 }
 
+.article-with-sidenotes {
+  position: relative;
+}
+
+.article-copy {
+  min-width: 0;
+}
+
+.footnote-ref {
+  display: inline-block;
+  margin-left: 1px;
+  color: #24863f;
+  font-size: 0.74em;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  vertical-align: super;
+}
+
+.footnote-ref:hover {
+  color: #166329;
+}
+
+.footnote-ref.is-highlighted {
+  color: #135d25;
+  background: #e6f4ea;
+  border-radius: 3px;
+}
+
+.page-sidenote-rail {
+  position: absolute;
+  top: 0;
+  left: calc(100% + var(--sidenote-gap));
+  width: var(--sidenote-column);
+  min-height: 1px;
+}
+
+.sidenote-rail {
+  display: none;
+}
+
+.sidenote {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  padding-left: 14px;
+  border-left: 2px solid #cdd8df;
+  color: #4b5660;
+  font-size: 0.82rem;
+  line-height: 1.36;
+}
+
+.sidenote.is-highlighted {
+  border-left-color: #24863f;
+  background: #f4faf6;
+}
+
+.sidenote-number {
+  margin-right: 5px;
+  color: #1f2328;
+  font-weight: 700;
+}
+
+.footnotes {
+  display: none;
+  margin: 22px 0 0;
+  padding-left: 22px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.footnotes li + li {
+  margin-top: 8px;
+}
+
+.role-user,
+.role-tool,
+.role-assistant,
+.role-system,
+.role-think {
+  font-weight: 600;
+}
+
+.role-user {
+  color: var(--role-user);
+}
+
+.role-tool {
+  color: var(--role-tool);
+}
+
+.role-assistant {
+  color: var(--role-assistant);
+}
+
+.role-system {
+  color: var(--role-system);
+}
+
+.role-think {
+  color: var(--role-think);
+}
+
+.role-tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.94em;
+  font-weight: 600;
+  word-spacing: normal;
+}
+
+.role-tag::before {
+  content: "<";
+}
+
+.role-tag::after {
+  content: ">";
+}
+
+.role-tag-close::before {
+  content: "</";
+}
+
+.role-chip {
+  display: inline-block;
+  padding: 0.05em 0.38em;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-size: 0.92em;
+  font-weight: 700;
+  line-height: 1.3;
+  vertical-align: baseline;
+}
+
+.role-chip.role-user {
+  background: var(--role-user-bg);
+}
+
+.role-chip.role-tool {
+  background: var(--role-tool-bg);
+}
+
+.role-chip.role-assistant {
+  background: var(--role-assistant-bg);
+}
+
+.role-chip.role-system {
+  background: var(--role-system-bg);
+}
+
+.role-chip.role-think {
+  background: var(--role-think-bg);
+}
+
 h2 {
-  margin-bottom: 12px;
-  font-size: 1.45rem;
+  margin-bottom: 10px;
+  font-size: 1.32rem;
+  font-weight: 600;
   line-height: 1.25;
 }
 
@@ -178,7 +373,8 @@ h3 {
 }
 
 .section p {
-  color: #333941;
+  color: var(--copy);
+  margin-bottom: 0.78rem;
 }
 
 .section p:last-child {
@@ -204,10 +400,19 @@ figure img {
 }
 
 figcaption {
-  padding: 9px 12px 11px;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 0.9rem;
+  margin: 8px auto 0;
+  padding: 0 2px;
+  color: #424a54;
+  font-size: 0.84rem;
+  font-style: italic;
+  line-height: 1.42;
+  text-align: center;
+}
+
+.caption-label {
+  color: var(--copy);
+  font-style: normal;
+  font-weight: 700;
 }
 
 .evidence-row {
@@ -222,19 +427,28 @@ figcaption {
 }
 
 .inline-figure {
-  justify-self: end;
+  justify-self: center;
   width: 100%;
-  max-width: 500px;
-  border: 1px solid var(--line);
-  background: var(--paper);
+  margin: 18px auto 14px;
+  border: 0;
+  background: transparent;
+}
+
+.figure-framed img {
+  box-shadow: 0 0 0 1px rgba(31, 35, 40, 0.09);
 }
 
 .stacked-figures {
   display: grid;
-  justify-self: end;
+  justify-self: center;
   width: 100%;
-  max-width: 500px;
+  margin: 0 auto;
   gap: 14px;
+}
+
+.evidence-row > .inline-figure,
+.stacked-figures .inline-figure {
+  margin: 0 auto;
 }
 
 .results-table {
@@ -403,15 +617,30 @@ pre {
   color: var(--ink);
   font-size: 0.88rem;
   line-height: 1.5;
+  word-spacing: normal;
+}
+
+code {
+  word-spacing: normal;
 }
 
 .footer {
   width: min(var(--max), calc(100% - (var(--page-gutter) * 2)));
-  margin-left: var(--page-gutter);
+  margin-left: auto;
   margin-right: auto;
   padding: 18px 0 40px;
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+@media (max-width: 1160px) {
+  .page-sidenote-rail {
+    display: none;
+  }
+
+  .footnotes {
+    display: block;
+  }
 }
 
 @media (max-width: 680px) {
@@ -452,6 +681,14 @@ pre {
   .demo-meta,
   .stacked-figures {
     grid-template-columns: 1fr;
+  }
+
+  .page-sidenote-rail {
+    display: none;
+  }
+
+  .footnotes {
+    display: block;
   }
 
   .meter {
