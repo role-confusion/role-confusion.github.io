@@ -23,6 +23,9 @@
   --role-system-bg: #f0f1f3;
   --role-think: #b45309;
   --role-think-bg: #fff3df;
+  --code-ink: #35424b;
+  --code-bg: #f4f7f9;
+  --code-line: #dfe7ee;
   --max: 920px;
   --page-gutter: clamp(24px, 7vw, 96px);
 }
@@ -213,6 +216,10 @@ h1 {
 
 .article-copy {
   min-width: 0;
+}
+
+.inline-footnote {
+  display: none;
 }
 
 .footnote-ref {
@@ -621,7 +628,29 @@ pre {
 }
 
 code {
+  padding: 0.03em 0.22em;
+  border: 1px solid var(--code-line);
+  border-radius: 3px;
+  background: var(--code-bg);
+  color: var(--code-ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.91em;
+  font-weight: 500;
+  line-height: 1.35;
   word-spacing: normal;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+pre code {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
 }
 
 .footer {
