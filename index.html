@@ -73,7 +73,7 @@
         <p class="article-kicker">Extended writeup</p>
         <h1 id="article-title">A Theory of Prompt Injection (and why you should study roles)</h1>
         <p class="article-deck">
-          This is a blog-style writeup of the paper. We provide a theory of how prompt injections work, showing they're linked to a flaw in how LLMs perceive roles. This lets us create new attacks, explain mech interp results, and predict when attacks succeed. We then discuss what roles are and why they matter, and open research ideas for a science of roles.
+          This is a blog-style writeup of the paper. We show prompt injections are driven by a flaw in how LLMs perceive roles. This lets us create new attacks, explain mech interp results, and predict when attacks succeed. We then discuss what roles are and why they matter, and share research ideas for a science of roles.
         <!-- We've been building a theory of how prompt injections work under the hood. We show it comes down to how LLMs perceive roles (the humble chat template tags). We use this theory to create new attacks, explain weird mech interp results, and predict when attacks work. We also advocate for a new subfield focused on the science of roles, and sketch some unexplored new research problems. -->
         </p>
       </section>
@@ -340,11 +340,9 @@
         <p>Unless LLMs achieve genuine role perception, we think injection defense will remain a perpetual whack-a-mole game. And the continuous nature of role boundaries opens the threat of injections designed to subtly shift LLM states through seemingly innocuous text, legally and at scale.</p>
         <p>More generally, roles are quietly one of the most important abstractions in the LLM stack, providing the boundaries meant to separate self from other, thought from communication, instruction from data. They're human-controlled switches in an otherwise continuous system. We think they deserve a lot more study than they've gotten.</p>
 
-        <p><em>We'd be interested to hear from anyone who's seen role confusion in production, is working on role-related problems or using them to understand LLM computation, or just finds these ideas interesting and wants to collaborate. For email contact you can reach us at  dogdynamics@proton.me.</em></p>
+        <p><em>We'd be interested to hear from anyone who's seen role confusion in production, is working on role-related problems or using them to understand LLM computation, or just finds these ideas interesting and wants to collaborate. You can reach me at dogdynamics[at]proton.me.</em></p>
 
-        <p><em>See <a href="https://arxiv.org/abs/2603.12277">full paper</a> with <a href="https://github.com/role-confusion/prompt-injection-as-role-confusion">code</a>. This writeup reflects the views of its authors, not necessarily of all our paper's co-authors.</em>.</p>
-
-        <p>This project was done in large part via the Cambridge Boston Alignment Initiative, with additional support from the Cosmos Institute.</p>
+        <p><em>See <a href="https://arxiv.org/abs/2603.12277">full paper</a> with <a href="https://github.com/role-confusion/prompt-injection-as-role-confusion">code</a>. This writeup reflects the views of its authors, not necessarily of all our paper's co-authors. This project was generously supported by the Cambridge Boston Alignment Initiative and the Cosmos Institute.</em></p>
 
       </section>
 
@@ -650,7 +648,7 @@
               </button>
             </div>
             <pre id="bibtex-writeup"><code>@misc{ye2026roleconfusionwriteup,
-  title = {A Theory of Prompt Injection as Role Confusion (and Why You Should Study Roles)},
+  title = {A Theory of Prompt Injection (and Why You Should Study Roles)},
   author = {Ye, Charles and Cui, Jasmine and Hadfield-Menell, Dylan},
   year = {2026},
   howpublished = {\url{https://role-confusion.github.io/}},
