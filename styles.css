@@ -95,7 +95,7 @@ img {
 }
 
 .draft-page {
-  --main-column: 720px;
+  --main-column: 740px;
   --sidenote-column: 260px;
   --sidenote-gap: 48px;
   position: relative;
@@ -152,6 +152,40 @@ h1 {
   font-size: 1.48rem;
   font-weight: 600;
   line-height: 1.22;
+}
+
+.article-intro {
+  margin: 20px 0 2px;
+  padding: 12px 0 4px;
+}
+
+.article-intro h1 {
+  max-width: 710px;
+  margin-bottom: 9px;
+  font-size: clamp(1.46rem, 2.35vw, 2rem);
+  font-weight: 600;
+  line-height: 1.16;
+}
+
+.article-intro + .section {
+  padding-top: 20px;
+}
+
+.article-kicker {
+  margin-bottom: 7px;
+  color: #2b7798;
+  font-family: var(--heading-font);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.article-deck {
+  max-width: 44rem;
+  margin-bottom: 0;
+  color: #40505a;
+  font-size: 1.02rem;
+  font-style: italic;
+  line-height: 1.52;
 }
 
 .authors {
